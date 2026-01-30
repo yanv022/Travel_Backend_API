@@ -5,6 +5,7 @@ import com.finexs.voyages.entity.Route;
 import com.finexs.voyages.repository.RouteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.finexs.voyages.exception.NotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,7 +25,7 @@ public class RouteService {
 
     public RouteDto getRouteById(Long id) {
         Route route = routeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Route not found"));
+                .orElseThrow(() -> new NotFoundException("Route not found"));
         return convertToDto(route);
     }
 
@@ -36,7 +37,7 @@ public class RouteService {
 
     public RouteDto updateRoute(Long id, RouteDto routeDto) {
         Route route = routeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Route not found"));
+                .orElseThrow(() -> new NotFoundException("Route not found"));
 
         route.setDepartureCity(routeDto.getDepartureCity());
         route.setArrivalCity(routeDto.getArrivalCity());
@@ -53,7 +54,7 @@ public class RouteService {
 
     public void deleteRoute(Long id) {
         if (!routeRepository.existsById(id)) {
-            throw new RuntimeException("Route not found");
+            throw new NotFoundException("Route not found");
         }
         routeRepository.deleteById(id);
     }
