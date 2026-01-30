@@ -24,17 +24,18 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/api/health").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/routes").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/routes/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/routes").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.PUT, "/api/routes/**").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.DELETE, "/api/routes/**").hasRole("MANAGER")
-                        .requestMatchers("/api/auth/me").authenticated()
+                        .requestMatchers("/health").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/routes").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/routes/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/routes").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.PUT, "/routes/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.DELETE, "/routes/**").hasRole("MANAGER")
+                        .requestMatchers("/auth/me").authenticated()
                         .anyRequest().authenticated()
                 )
+
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
