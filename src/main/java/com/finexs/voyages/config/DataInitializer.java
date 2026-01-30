@@ -1,0 +1,109 @@
+package com.finexs.voyages.config;
+
+import com.finexs.voyages.entity.Route;
+import com.finexs.voyages.entity.User;
+import com.finexs.voyages.entity.UserRole;
+import com.finexs.voyages.repository.RouteRepository;
+import com.finexs.voyages.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.util.Arrays;
+
+@Component
+public class DataInitializer implements CommandLineRunner {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private RouteRepository routeRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Override
+    public void run(String... args) throws Exception {
+        initializeUsers();
+        initializeRoutes();
+    }
+
+    private void initializeUsers() {
+        if (userRepository.findByEmail("admin@system.com").isEmpty()) {
+            User admin = new User();
+            admin.setName("Admin User");
+            admin.setEmail("admin@system.com");
+            admin.setPassword(passwordEncoder.encode("password123"));
+            admin.setRole(UserRole.ADMIN);
+            userRepository.save(admin);
+        }
+
+        if (userRepository.findByEmail("manager@finexs.com").isEmpty()) {
+            User manager = new User();
+            manager.setName("Manager User");
+            manager.setEmail("manager@finexs.com");
+            manager.setPassword(passwordEncoder.encode("password123"));
+            manager.setRole(UserRole.MANAGER);
+            userRepository.save(manager);
+        }
+
+        if (userRepository.findByEmail("traveler@email.com").isEmpty()) {
+            User traveler = new User();
+            traveler.setName("Traveler User");
+            traveler.setEmail("traveler@email.com");
+            traveler.setPassword(passwordEncoder.encode("password123"));
+            traveler.setRole(UserRole.TRAVELER);
+            userRepository.save(traveler);
+        }
+    }
+
+    private void initializeRoutes() {
+        if (routeRepository.count() == 0) {
+            LocalDateTime now = LocalDateTime.now();
+
+            Route route1 = new Route();
+            route1.setDepartureCity("Douala");
+            route1.setArrivalCity("Yaoundé");
+            route1.setDepartureTime(now.plusHours(2));
+            route1.setArrivalTime(now.plusHours(5));
+            route1.setDuration(180);
+            route1.setCompany("Finexs Voyages");
+            route1.setAmenities(Arrays.asList("WiFi", "Climatisation", "Toilettes"));
+            routeRepository.save(route1);
+
+            Route route2 = new Route();
+            route2.setDepartureCity("Bafoussam");
+            route2.setArrivalCity("Douala");
+            route2.setDepartureTime(now.plusHours(3));
+            route2.setArrivalTime(now.plusHours(7));
+            route2.setDuration(240);
+            route2.setCompany("Finexs Voyages");
+            route2.setAmenities(Arrays.asList("WiFi", "Climatisation", "Repas"));
+            routeRepository.save(route2);
+
+            Route route3 = new Route();
+            route3.setDepartureCity("Ngaoundéré");
+            route3.setArrivalCity("Yaoundé");
+            route3.setDepartureTime(now.plusHours(4));
+            route3.setArrivalTime(now.plusHours(10));
+            route3.setDuration(360);
+            route3.setCompany("Finexs Voyages");
+            route3.setAmenities(Arrays.asList("WiFi", "Climatisation", "Toilettes", "Repas"));
+            routeRepository.save(route3);
+
+            Route route4 = new Route();
+            route4.setDepartureCity("Yaoundé");
+            route4.setArrivalCity("Douala");
+            route4.setDepartureTime(now.plusHours(5));
+            route4.setArrivalTime(now.plusHours(8));
+            route4.setDuration(180);
+            route4.setCompany("Finexs Voyages");
+            route4.setAmenities(Arrays.asList("WiFi", "Climatisation", "Toilettes"));
+            routeRepository.save(route4);
+        }
+    }
+
+}

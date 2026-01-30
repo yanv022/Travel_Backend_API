@@ -1,0 +1,86 @@
+package com.finexs.voyages.service;
+
+import com.finexs.voyages.dto.RouteDto;
+import com.finexs.voyages.entity.Route;
+import com.finexs.voyages.repository.RouteRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class RouteService {
+
+    @Autowired
+    private RouteRepository routeRepository;
+
+    public List<RouteDto> getAllRoutes() {
+        return routeRepository.findAll()
+                .stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    public RouteDto getRouteById(Long id) {
+        Route route = routeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Route not found"));
+        return convertToDto(route);
+    }
+
+    public RouteDto createRoute(RouteDto routeDto) {
+        Route route = convertToEntity(routeDto);
+        Route savedRoute = routeRepository.save(route);
+        return convertToDto(savedRoute);
+    }
+
+    public RouteDto updateRoute(Long id, RouteDto routeDto) {
+        Route route = routeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Route not found"));
+
+        route.setDepartureCity(routeDto.getDepartureCity());
+        route.setArrivalCity(routeDto.getArrivalCity());
+        route.setDepartureTime(routeDto.getDepartureTime());
+        route.setArrivalTime(routeDto.getArrivalTime());
+        route.setDuration(routeDto.getDuration());
+        route.setCompany(routeDto.getCompany());
+        route.setAmenities(routeDto.getAmenities());
+        route.setUpdatedAt(System.currentTimeMillis());
+
+        Route updatedRoute = routeRepository.save(route);
+        return convertToDto(updatedRoute);
+    }
+
+    public void deleteRoute(Long id) {
+        if (!routeRepository.existsById(id)) {
+            throw new RuntimeException("Route not found");
+        }
+        routeRepository.deleteById(id);
+    }
+
+    private RouteDto convertToDto(Route route) {
+        return new RouteDto(
+                route.getId(),
+                route.getDepartureCity(),
+                route.getArrivalCity(),
+                route.getDepartureTime(),
+                route.getArrivalTime(),
+                route.getDuration(),
+                route.getCompany(),
+                route.getAmenities()
+        );
+    }
+
+    private Route convertToEntity(RouteDto routeDto) {
+        Route route = new Route();
+        route.setDepartureCity(routeDto.getDepartureCity());
+        route.setArrivalCity(routeDto.getArrivalCity());
+        route.setDepartureTime(routeDto.getDepartureTime());
+        route.setArrivalTime(routeDto.getArrivalTime());
+        route.setDuration(routeDto.getDuration());
+        route.setCompany(routeDto.getCompany());
+        route.setAmenities(routeDto.getAmenities());
+        return route;
+    }
+
+}
