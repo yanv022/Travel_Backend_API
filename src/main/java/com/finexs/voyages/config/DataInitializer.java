@@ -7,11 +7,16 @@ import com.finexs.voyages.repository.RouteRepository;
 import com.finexs.voyages.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.time.LocalDate;
+import com.finexs.voyages.entity.RouteSchedule;
+import com.finexs.voyages.repository.RouteScheduleRepository;
+
 
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -105,5 +110,56 @@ public class DataInitializer implements CommandLineRunner {
             routeRepository.save(route4);
         }
     }
+    @Bean
+    CommandLineRunner loadSchedules(
+            RouteRepository routeRepository,
+            RouteScheduleRepository scheduleRepository
+    ) {
+        return args -> {
+
+            if (scheduleRepository.count() == 0) {
+
+                Route doualaYaounde = routeRepository
+                        .findAll()
+                        .stream()
+                        .filter(r ->
+                                r.getDepartureCity().equals("Douala")
+                                        && r.getArrivalCity().equals("Yaoundé")
+                        )
+                        .findFirst()
+                        .orElse(null);
+
+                if (doualaYaounde != null) {
+                    scheduleRepository.save(createSchedule(
+                            doualaYaounde,
+                            LocalDate.now().plusDays(1),
+                            8000,
+                            40
+                    ));
+                    scheduleRepository.save(createSchedule(
+                            doualaYaounde,
+                            LocalDate.now().plusDays(2),
+                            7500,
+                            25
+                    ));
+                }
+            }
+        };
+    }
+
+    private RouteSchedule createSchedule(
+            Route route,
+            LocalDate date,
+            int price,
+            int seats
+    ) {
+        RouteSchedule s = new RouteSchedule();
+        s.setRoute(route);
+        s.setTravelDate(date);
+        s.setPrice(price);
+        s.setAvailableSeats(seats);
+        return s;
+    }
+
 
 }

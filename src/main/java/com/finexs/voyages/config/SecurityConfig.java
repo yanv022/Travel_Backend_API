@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.Customizer;
 
 @Configuration
 @EnableWebSecurity
@@ -25,7 +26,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
+
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/health").permitAll()
@@ -36,6 +39,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/routes").hasRole("MANAGER")
                         .requestMatchers(HttpMethod.PUT, "/routes/**").hasRole("MANAGER")
                         .requestMatchers(HttpMethod.DELETE, "/routes/**").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.GET, "/routes/*/schedules").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/routes/*/schedules").hasRole("MANAGER")
+                        .requestMatchers("/bookings/**").hasRole("TRAVELER")
                         .requestMatchers("/auth/me").authenticated()
                         .anyRequest().authenticated()
                 )
