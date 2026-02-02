@@ -16,6 +16,9 @@ import java.util.Arrays;
 import java.time.LocalDate;
 import com.finexs.voyages.entity.RouteSchedule;
 import com.finexs.voyages.repository.RouteScheduleRepository;
+import com.finexs.voyages.entity.Agency;
+import com.finexs.voyages.repository.AgencyRepository;
+
 
 
 @Component
@@ -30,6 +33,10 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private AgencyRepository agencyRepository;
+
+
     @Override
     public void run(String... args) throws Exception {
         initializeUsers();
@@ -37,6 +44,9 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void initializeUsers() {
+
+        Agency agency = initializeAgency(); // 👈 ICI
+
         if (userRepository.findByEmail("admin@system.com").isEmpty()) {
             User admin = new User();
             admin.setName("Admin User");
@@ -52,6 +62,7 @@ public class DataInitializer implements CommandLineRunner {
             manager.setEmail("manager@finexs.com");
             manager.setPassword(passwordEncoder.encode("password123"));
             manager.setRole(UserRole.MANAGER);
+            manager.setAgency(agency);
             userRepository.save(manager);
         }
 
@@ -66,6 +77,8 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void initializeRoutes() {
+        Agency agency = initializeAgency();
+
         if (routeRepository.count() == 0) {
             LocalDateTime now = LocalDateTime.now();
 
@@ -75,8 +88,9 @@ public class DataInitializer implements CommandLineRunner {
             route1.setDepartureTime(now.plusHours(2));
             route1.setArrivalTime(now.plusHours(5));
             route1.setDuration(180);
-            route1.setCompany("Finexs Voyages");
             route1.setAmenities(Arrays.asList("WiFi", "Climatisation", "Toilettes"));
+            route1.setCompany("Finexs Voyages");
+            route1.setAgency(agency);
             routeRepository.save(route1);
 
             Route route2 = new Route();
@@ -85,8 +99,9 @@ public class DataInitializer implements CommandLineRunner {
             route2.setDepartureTime(now.plusHours(3));
             route2.setArrivalTime(now.plusHours(7));
             route2.setDuration(240);
-            route2.setCompany("Finexs Voyages");
             route2.setAmenities(Arrays.asList("WiFi", "Climatisation", "Repas"));
+            route2.setAgency(agency);
+            route2.setCompany("Finexs Voyages");
             routeRepository.save(route2);
 
             Route route3 = new Route();
@@ -95,8 +110,9 @@ public class DataInitializer implements CommandLineRunner {
             route3.setDepartureTime(now.plusHours(4));
             route3.setArrivalTime(now.plusHours(10));
             route3.setDuration(360);
-            route3.setCompany("Finexs Voyages");
             route3.setAmenities(Arrays.asList("WiFi", "Climatisation", "Toilettes", "Repas"));
+            route3.setCompany("Finexs Voyages");
+            route3.setAgency(agency);
             routeRepository.save(route3);
 
             Route route4 = new Route();
@@ -105,8 +121,9 @@ public class DataInitializer implements CommandLineRunner {
             route4.setDepartureTime(now.plusHours(5));
             route4.setArrivalTime(now.plusHours(8));
             route4.setDuration(180);
-            route4.setCompany("Finexs Voyages");
             route4.setAmenities(Arrays.asList("WiFi", "Climatisation", "Toilettes"));
+            route4.setAgency(agency);
+            route4.setCompany("Finexs Voyages");
             routeRepository.save(route4);
         }
     }
@@ -160,6 +177,19 @@ public class DataInitializer implements CommandLineRunner {
         s.setAvailableSeats(seats);
         return s;
     }
+
+    private Agency initializeAgency() {
+        return agencyRepository.findByName("Finexs Voyages")
+                .orElseGet(() -> {
+                    Agency agency = new Agency();
+                    agency.setName("Finexs Voyages");
+                    agency.setDescription("Agence de transport interurbain");
+                    return agencyRepository.save(agency);
+                });
+    }
+
+
+
 
 
 }

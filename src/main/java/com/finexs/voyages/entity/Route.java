@@ -34,7 +34,7 @@ public class Route {
     @Column(nullable = false)
     private Integer duration;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String company;
 
     @ElementCollection
@@ -42,10 +42,17 @@ public class Route {
     @Column(name = "amenity")
     private List<String> amenities;
 
+    @ManyToOne
+    @JoinColumn(name = "agency_id", nullable = false)
+    private Agency agency;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Long createdAt = System.currentTimeMillis();
 
     @Column(name = "updated_at")
     private Long updatedAt = System.currentTimeMillis();
+
+
+
 
 }

@@ -3,7 +3,8 @@ spring:
     name: finexs-voyages-backend
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/finexs_voyages
+    #url: jdbc:postgresql://localhost:5432/finexs_voyages
+    url: jdbc:postgresql://localhost:5432/travel
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver

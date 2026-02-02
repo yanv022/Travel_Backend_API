@@ -6,8 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import com.finexs.voyages.entity.User;
 import java.util.List;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.Authentication;
+
 
 @RestController
 @RequestMapping("/routes")
@@ -29,9 +33,12 @@ public class RouteController {
     }
 
     @PostMapping
-    public ResponseEntity<RouteDto> createRoute(@RequestBody RouteDto routeDto) {
-        RouteDto createdRoute = routeService.createRoute(routeDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdRoute);
+    public ResponseEntity<RouteDto> createRoute(
+            @RequestBody RouteDto dto,
+            @AuthenticationPrincipal User currentUser
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(routeService.createRoute(dto, currentUser));
     }
 
     @PutMapping("/{id}")
@@ -45,5 +52,21 @@ public class RouteController {
         routeService.deleteRoute(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/agency")
+    public ResponseEntity<List<RouteDto>> getRoutesForAgency() {
+
+        Authentication auth = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
+        String email = auth.getName(); // ✅ email depuis JWT
+
+        return ResponseEntity.ok(
+                routeService.getRoutesForAgency(email)
+        );
+    }
+
+
 
 }

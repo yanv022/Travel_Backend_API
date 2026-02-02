@@ -43,6 +43,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/routes/*/schedules").hasRole("MANAGER")
                         .requestMatchers("/bookings/**").hasRole("TRAVELER")
                         .requestMatchers("/auth/me").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/routes/agency").hasRole("MANAGER")
+
                         .anyRequest().authenticated()
                 )
 
