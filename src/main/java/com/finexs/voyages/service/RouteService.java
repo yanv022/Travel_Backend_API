@@ -59,7 +59,7 @@ public class RouteService {
         route.setDepartureTime(routeDto.getDepartureTime());
         route.setArrivalTime(routeDto.getArrivalTime());
         route.setDuration(routeDto.getDuration());
-        route.setCompany(routeDto.getCompany());
+        //route.setCompany(routeDto.getCompany());
         route.setAmenities(routeDto.getAmenities());
         route.setUpdatedAt(System.currentTimeMillis());
 
@@ -82,7 +82,7 @@ public class RouteService {
                 route.getDepartureTime(),
                 route.getArrivalTime(),
                 route.getDuration(),
-                route.getCompany(),
+                //route.getCompany(),
                 route.getAmenities()
         );
     }
@@ -101,7 +101,7 @@ public class RouteService {
         route.setDepartureTime(routeDto.getDepartureTime());
         route.setArrivalTime(routeDto.getArrivalTime());
         route.setDuration(routeDto.getDuration());
-        route.setCompany(routeDto.getCompany());
+        //route.setCompany(routeDto.getCompany());
         route.setAmenities(routeDto.getAmenities());
         return route;
     }

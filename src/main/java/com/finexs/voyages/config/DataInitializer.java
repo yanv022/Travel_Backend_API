@@ -89,7 +89,7 @@ public class DataInitializer implements CommandLineRunner {
             route1.setArrivalTime(now.plusHours(5));
             route1.setDuration(180);
             route1.setAmenities(Arrays.asList("WiFi", "Climatisation", "Toilettes"));
-            route1.setCompany("Finexs Voyages");
+            //route1.setCompany("Finexs Voyages");
             route1.setAgency(agency);
             routeRepository.save(route1);
 
@@ -101,7 +101,7 @@ public class DataInitializer implements CommandLineRunner {
             route2.setDuration(240);
             route2.setAmenities(Arrays.asList("WiFi", "Climatisation", "Repas"));
             route2.setAgency(agency);
-            route2.setCompany("Finexs Voyages");
+            //route2.setCompany("Finexs Voyages");
             routeRepository.save(route2);
 
             Route route3 = new Route();
@@ -111,7 +111,7 @@ public class DataInitializer implements CommandLineRunner {
             route3.setArrivalTime(now.plusHours(10));
             route3.setDuration(360);
             route3.setAmenities(Arrays.asList("WiFi", "Climatisation", "Toilettes", "Repas"));
-            route3.setCompany("Finexs Voyages");
+            //route3.setCompany("Finexs Voyages");
             route3.setAgency(agency);
             routeRepository.save(route3);
 
@@ -123,7 +123,7 @@ public class DataInitializer implements CommandLineRunner {
             route4.setDuration(180);
             route4.setAmenities(Arrays.asList("WiFi", "Climatisation", "Toilettes"));
             route4.setAgency(agency);
-            route4.setCompany("Finexs Voyages");
+            //route4.setCompany("Finexs Voyages");
             routeRepository.save(route4);
         }
     }

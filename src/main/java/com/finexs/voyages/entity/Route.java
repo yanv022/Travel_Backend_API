@@ -34,8 +34,8 @@ public class Route {
     @Column(nullable = false)
     private Integer duration;
 
-    @Column(nullable = true)
-    private String company;
+    //@Column(nullable = true)
+    //private String company;
 
     @ElementCollection
     @CollectionTable(name = "route_amenities", joinColumns = @JoinColumn(name = "route_id"))

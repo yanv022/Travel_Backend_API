@@ -24,7 +24,6 @@ public class RouteDto {
     private LocalDateTime arrivalTime;
 
     private Integer duration;
-    private String company;
     private List<String> amenities;
 
 }
