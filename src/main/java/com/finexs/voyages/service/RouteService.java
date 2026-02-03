@@ -3,6 +3,7 @@ package com.finexs.voyages.service;
 import com.finexs.voyages.dto.RouteDto;
 import com.finexs.voyages.entity.Route;
 import com.finexs.voyages.entity.User;
+import com.finexs.voyages.entity.UserRole;
 import com.finexs.voyages.repository.RouteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,7 +11,8 @@ import com.finexs.voyages.exception.NotFoundException;
 import com.finexs.voyages.entity.User;
 import com.finexs.voyages.exception.ForbiddenException;
 import com.finexs.voyages.repository.UserRepository;
-
+import org.springframework.security.core.context.SecurityContextHolder;
+import java.time.LocalDateTime;
 
 
 
@@ -33,22 +35,8 @@ public class RouteService {
                 .collect(Collectors.toList());
     }
 
-    public RouteDto createRoute(RouteDto routeDto, User manager) {
-
-        Route route = convertToEntity(routeDto);
-        route.setAgency(manager.getAgency());
-
-        Route savedRoute = routeRepository.save(route);
-        return convertToDto(savedRoute);
-    }
 
 
-    public RouteDto createRoute(RouteDto routeDto) {
-
-        Route route = convertToEntity(routeDto);
-        Route savedRoute = routeRepository.save(route);
-        return convertToDto(savedRoute);
-    }
 
     public RouteDto updateRoute(Long id, RouteDto routeDto) {
         Route route = routeRepository.findById(id)
@@ -59,7 +47,6 @@ public class RouteService {
         route.setDepartureTime(routeDto.getDepartureTime());
         route.setArrivalTime(routeDto.getArrivalTime());
         route.setDuration(routeDto.getDuration());
-        //route.setCompany(routeDto.getCompany());
         route.setAmenities(routeDto.getAmenities());
         route.setUpdatedAt(System.currentTimeMillis());
 
@@ -84,6 +71,7 @@ public class RouteService {
                 route.getDuration(),
                 //route.getCompany(),
                 route.getAmenities()
+
         );
     }
 
@@ -101,7 +89,6 @@ public class RouteService {
         route.setDepartureTime(routeDto.getDepartureTime());
         route.setArrivalTime(routeDto.getArrivalTime());
         route.setDuration(routeDto.getDuration());
-        //route.setCompany(routeDto.getCompany());
         route.setAmenities(routeDto.getAmenities());
         return route;
     }
@@ -121,6 +108,50 @@ public class RouteService {
                 .map(this::convertToDto)
                 .toList();
     }
+    public RouteDto createRoute(RouteDto routeDto) {
+
+        User manager = getAuthenticatedManager();
+
+        Route route = convertToEntity(routeDto);
+        route.setAgency(manager.getAgency());
+
+        Route savedRoute = routeRepository.save(route);
+        return convertToDto(savedRoute);
+    }
+
+
+    private User getAuthenticatedManager() {
+
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ForbiddenException("User not found"));
+
+        if (user.getRole() != UserRole.MANAGER) {
+            throw new ForbiddenException("Only managers can perform this action");
+        }
+
+        if (user.getAgency() == null) {
+            throw new ForbiddenException("Manager has no agency");
+        }
+
+        return user;
+    }
+
+    public List<RouteDto> getRoutesForAgency() {
+
+        User manager = getAuthenticatedManager();
+
+        return routeRepository
+                .findByAgencyId(manager.getAgency().getId())
+                .stream()
+                .map(this::convertToDto)
+                .toList();
+    }
+
 
 
 

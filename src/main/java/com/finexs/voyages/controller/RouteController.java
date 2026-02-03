@@ -34,12 +34,12 @@ public class RouteController {
 
     @PostMapping
     public ResponseEntity<RouteDto> createRoute(
-            @RequestBody RouteDto dto,
-            @AuthenticationPrincipal User currentUser
+            @RequestBody RouteDto dto
     ) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(routeService.createRoute(dto, currentUser));
+                .body(routeService.createRoute(dto));
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<RouteDto> updateRoute(@PathVariable Long id, @RequestBody RouteDto routeDto) {
